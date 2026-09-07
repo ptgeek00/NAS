@@ -31,7 +31,10 @@ for (const file of files) {
   }
 
   const body = lines.slice(bodyStart).join('\n');
-  const frontmatter = `---\ntitle: "${yamlEscape(title)}"\n---\n\n`;
+  // These pages are generated, not authored here — send "Edit page" to the
+  // real source file at the repo root (docs/<file>.md), not this generated copy.
+  const editUrl = `https://github.com/ptgeek00/NAS/edit/main/docs/${file}`;
+  const frontmatter = `---\ntitle: "${yamlEscape(title)}"\neditUrl: "${editUrl}"\n---\n\n`;
 
   writeFileSync(join(DEST_DIR, file), frontmatter + body, 'utf-8');
 }
