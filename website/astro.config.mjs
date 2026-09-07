@@ -5,7 +5,7 @@ import starlight from '@astrojs/starlight';
 import starlightBlog from 'starlight-blog';
 
 export default defineConfig({
-  site: 'https://ptgeek00.com',
+  site: 'https://nas.ptgeek00.com',
   integrations: [
     starlight({
       title: 'ptgeek00 / NAS',
