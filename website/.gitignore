@@ -1,0 +1,7 @@
+# build output
+dist/
+.astro/
+node_modules/
+
+# generated from ../docs/*.md by scripts/sync-docs.mjs — do not edit or commit
+src/content/docs/*.md

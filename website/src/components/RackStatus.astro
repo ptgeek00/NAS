@@ -1,0 +1,110 @@
+---
+// Real container inventory — update this list as CTs are added/retired.
+// Status is one of 'online' | 'planned' | 'watch'.
+const units = [
+  { id: 'HOST', name: 'proxmoxathome', role: 'Proxmox VE 9.2.2 hypervisor', status: 'online' },
+  { id: 'CT100', name: 'ct100', role: 'Original container (predates this doc set)', status: 'online' },
+  { id: 'CT101', name: 'plex', role: 'Plex — native, GPU passthrough', status: 'online' },
+  { id: 'CT102', name: 'smb', role: 'Samba file share', status: 'online' },
+  { id: 'CT103', name: 'jellyfin', role: 'Jellyfin — native, GPU passthrough', status: 'online' },
+  { id: 'CT104', name: 'ollama', role: 'Ollama — native, GPU passthrough', status: 'online' },
+  { id: 'CT105', name: 'openwebui', role: 'Open WebUI — Docker, no GPU', status: 'planned' },
+  { id: 'CT106', name: 'minecraft', role: 'Modded Minecraft (NeoForge)', status: 'online' },
+];
+
+const statusLabel = {
+  online: 'running',
+  planned: 'planned',
+  watch: 'watch',
+};
+---
+
+<div class="rack">
+  {
+    units.map((u) => (
+      <div class="rack-unit" data-status={u.status}>
+        <span class="rack-id">{u.id}</span>
+        <span class="rack-meta">
+          <span class="rack-name">{u.name}</span>
+          <span class="rack-role">{u.role}</span>
+        </span>
+        <span class="rack-status">{statusLabel[u.status]}</span>
+      </div>
+    ))
+  }
+</div>
+
+<style>
+  .rack {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid var(--sl-color-hairline);
+    border-radius: 0.25rem;
+    overflow: hidden;
+    background: var(--sl-color-gray-7);
+  }
+
+  .rack-unit {
+    display: grid;
+    grid-template-columns: 4.5rem 1fr auto;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.6rem 0.9rem;
+    border-left: 3px solid var(--rack-status-online);
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .rack-unit:last-child {
+    border-bottom: none;
+  }
+
+  .rack-unit[data-status='planned'] {
+    border-left-color: var(--rack-status-planned);
+    opacity: 0.75;
+  }
+
+  .rack-unit[data-status='watch'] {
+    border-left-color: var(--rack-status-warn);
+  }
+
+  .rack-id {
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    letter-spacing: 0.02em;
+  }
+
+  .rack-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 0.1rem;
+    min-width: 0;
+  }
+
+  .rack-name {
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-white);
+  }
+
+  .rack-role {
+    font-size: var(--sl-text-xs);
+    color: var(--sl-color-gray-3);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .rack-status {
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-2xs);
+    color: var(--sl-color-gray-2);
+    white-space: nowrap;
+  }
+
+  @media (max-width: 40rem) {
+    .rack-role {
+      display: none;
+    }
+  }
+</style>

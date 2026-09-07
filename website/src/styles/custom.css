@@ -1,0 +1,79 @@
+@import '@fontsource/ibm-plex-sans/400.css';
+@import '@fontsource/ibm-plex-sans/500.css';
+@import '@fontsource/ibm-plex-sans/600.css';
+@import '@fontsource/ibm-plex-mono/400.css';
+@import '@fontsource/ibm-plex-mono/500.css';
+@import '@fontsource/ibm-plex-mono/600.css';
+
+/*
+  Palette: a server-rack instrument panel, not a SaaS marketing site.
+  Deep graphite chassis, amber diagnostic-LED accent (the warning-light
+  color you actually see on this hardware), a muted teal-green reserved
+  strictly for "done / online" status — never used decoratively.
+*/
+:root {
+  --sl-color-white: #f4f5f7;
+  --sl-color-gray-1: #dde1e7;
+  --sl-color-gray-2: #b7bfc9;
+  --sl-color-gray-3: #8891a0;
+  --sl-color-gray-4: #59626f;
+  --sl-color-gray-5: #313944;
+  --sl-color-gray-6: #1a2029;
+  --sl-color-gray-7: #151a22;
+  --sl-color-black: #10141a;
+
+  --sl-color-accent-low: #4a3315;
+  --sl-color-accent: #e8a33d;
+  --sl-color-accent-high: #f4cd8f;
+
+  --sl-color-bg: var(--sl-color-black);
+  --sl-color-bg-nav: var(--sl-color-gray-7);
+  --sl-color-bg-sidebar: var(--sl-color-gray-7);
+  --sl-color-hairline: var(--sl-color-gray-5);
+  --sl-color-hairline-light: var(--sl-color-gray-5);
+
+  --rack-status-online: #5fb88e;
+  --rack-status-planned: #8891a0;
+  --rack-status-warn: #d97757;
+
+  --sl-font: 'IBM Plex Sans', var(--sl-font-system);
+  --sl-font-mono: 'IBM Plex Mono', var(--sl-font-system-mono);
+}
+
+:root[data-theme='light'] {
+  --sl-color-white: #12161c;
+  --sl-color-gray-1: #232a34;
+  --sl-color-gray-2: #454e5b;
+  --sl-color-gray-3: #6b7480;
+  --sl-color-gray-4: #9aa2ab;
+  --sl-color-gray-5: #ccd1d6;
+  --sl-color-gray-6: #e7e9ec;
+  --sl-color-gray-7: #f1f2f4;
+  --sl-color-black: #fbfbfc;
+
+  --sl-color-accent-low: #f6ddb1;
+  --sl-color-accent: #b9720b;
+  --sl-color-accent-high: #6e4407;
+
+  --rack-status-online: #2f8f66;
+  --rack-status-planned: #6b7480;
+  --rack-status-warn: #b0502f;
+}
+
+/* Headings use the mono face — nameplate / schematic-label feel — body
+   copy stays on the humanist sans for long-form reading comfort. */
+h1,
+h2,
+h3,
+h4,
+.sl-markdown-content h1,
+.sl-markdown-content h2,
+.sl-markdown-content h3 {
+  font-family: var(--sl-font-mono);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+site-search {
+  --sl-font: var(--sl-font);
+}

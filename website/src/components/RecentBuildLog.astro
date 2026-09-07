@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+
+const all = await getCollection('docs', (entry) => entry.id.startsWith('blog/'));
+const posts = all
+  .filter((p) => p.data.date)
+  .sort((a, b) => (b.data.date?.valueOf() ?? 0) - (a.data.date?.valueOf() ?? 0))
+  .slice(0, 4);
+
+const fmt = (d) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: '2-digit' });
+---
+
+<ul class="log-list">
+  {
+    posts.map((post) => (
+      <li>
+        <a href={`/blog/${post.id.replace(/^blog\//, '')}/`}>
+          <span class="log-date">{fmt(post.data.date)}</span>
+          <span class="log-title">{post.data.title}</span>
+        </a>
+        {post.data.excerpt && <p class="log-excerpt">{post.data.excerpt}</p>}
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .log-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 1.1rem;
+  }
+
+  .log-list li {
+    padding-bottom: 1.1rem;
+    border-bottom: 1px solid var(--sl-color-hairline);
+  }
+
+  .log-list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .log-list a {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 0.6rem;
+    text-decoration: none;
+  }
+
+  .log-date {
+    font-family: var(--sl-font-mono);
+    font-size: var(--sl-text-2xs);
+    color: var(--sl-color-accent-high);
+    white-space: nowrap;
+  }
+
+  .log-title {
+    font-size: var(--sl-text-base);
+    color: var(--sl-color-white);
+    font-weight: 500;
+  }
+
+  .log-list a:hover .log-title {
+    color: var(--sl-color-accent-high);
+  }
+
+  .log-excerpt {
+    margin: 0.35rem 0 0;
+    font-size: var(--sl-text-sm);
+    color: var(--sl-color-gray-3);
+    max-width: 60ch;
+  }
+</style>
