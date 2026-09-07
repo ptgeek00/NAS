@@ -1,6 +1,8 @@
 # Jellyfin — Shared Media + GPU Passthrough Runbook
 
-_Captured 2026-08-17. Jellyfin runs alongside Plex (`CT101`) for a side-by-side trial — same host, same media, same GPU._
+_Captured 2026-08-17. Jellyfin runs alongside Plex (`CT101`) for the side-by-side trial the master project instructions call out — same host, same media, same GPU._
+
+_**2026-08-25 update:** the GPU device list below now shows `/dev/dri/by-path/...` for `dev4`/`dev5` — the live config for `CT103` was switched from `card0`/`renderD128` to PCI `by-path` device names (keyed to the GPU's fixed PCI address `07:00.0` rather than kernel boot-order enumeration, which can shift). See `gpu-passthrough-plex-plan.md` and `ollama-llm-setup-plan.md` for the same change and full rationale._
 
 ## Decisions locked in this session
 
@@ -30,18 +32,20 @@ pct start 103
 pct set 103 -mp0 /HDDs/media,mp=/media
 ```
 
-Pass the GPU in — identical device list to what's already working for Plex (`/dev/nvidia-modeset` deliberately excluded, same reasoning as the Plex doc: doesn't exist on this headless host, not needed for compute/transcode). Edit `/etc/pve/lxc/103.conf`:
+Pass the GPU in. Edit `/etc/pve/lxc/103.conf`:
 
 ```
 dev0: /dev/nvidia0
 dev1: /dev/nvidiactl
 dev2: /dev/nvidia-uvm
 dev3: /dev/nvidia-uvm-tools
-dev4: /dev/dri/card0
-dev5: /dev/dri/renderD128
+dev4: /dev/dri/by-path/pci-0000:07:00.0-card
+dev5: /dev/dri/by-path/pci-0000:07:00.0-render
 dev6: /dev/nvidia-caps/nvidia-cap1
 dev7: /dev/nvidia-caps/nvidia-cap2
 ```
+
+(`/dev/nvidia-modeset` deliberately excluded, same reasoning as the Plex doc: doesn't exist on this headless host, not needed for compute/transcode. `dev4`/`dev5` use PCI `by-path` names rather than `card0`/`renderD128` so they can't renumber across a kernel update or a second GPU being added — see the Plex doc for the full rationale.)
 
 ```bash
 pct reboot 103
@@ -72,8 +76,9 @@ apt install -y jellyfin
 
 **Point Jellyfin at the shared library** — web UI at `http://<CT103-ip>:8096`, setup wizard or Dashboard → Libraries → Add Media Library, browse to `/media/movies` and `/media/tv` (the same folders Plex already uses).
 
-**Enable hardware transcoding** — Dashboard → Playback → Hardware acceleration → **Nvidia NVENC**, select `/dev/dri/renderD128` as the render device, enable hardware decoding for H.264/HEVC at minimum.
+**Enable hardware transcoding** — Dashboard → Playback → Hardware acceleration → **Nvidia NVENC**, select the render device as it appears inside the container (run `ls -la /dev/dri/` in `CT103` to confirm the current name — this may now be the `by-path` render node rather than `/dev/dri/renderD128`, depending on how Proxmox surfaces the passed-through device inside the container), enable hardware decoding for H.264/HEVC at minimum.
 
 ## Still open
 
-See `architecture-decisions.md` for the full, current list.
+- Final Plex vs Jellyfin choice — this setup exists specifically to run both side by side for that comparison
+- Whether the shared 3-session NVENC cap becomes a real constraint once both are in regular use
